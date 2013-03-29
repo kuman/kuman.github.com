@@ -11,4 +11,7 @@ Thumbs.db
 .rvmrc
 =======
 _site/
+
+.*.swp
+.*.swo
 >>>>>>> origin/master
