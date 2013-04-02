@@ -14,4 +14,5 @@ _site/
 
 .*.swp
 .*.swo
+/server
 >>>>>>> origin/master
