@@ -422,14 +422,14 @@ h6 {
 }
 h1,
 .h1 {
-  font-size: 30px;
+  font-size: 24px;
   line-height: 52px;
   margin-top: 52px;
   margin-bottom: 26px;
 }
 h2,
 .h2 {
-  font-size: 30px;
+  font-size: 24px;
   line-height: 52px;
   margin-top: 52px;
   margin-bottom: 26px;
@@ -940,7 +940,7 @@ pre {
 }
 .the-header .unit-head .nav-global .logo a {
   display: block;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 52px;
   padding-bottom: 0px;
 }

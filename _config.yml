@@ -1,6 +1,9 @@
+markdown:    redcarpet
+
 # This is the default format. 
 # For more see: https://github.com/mojombo/jekyll/wiki/Permalinks
 permalink: /:categories/:year/:month/:day/:title 
+
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 auto: true
@@ -83,9 +86,9 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : jekyllbootstrap
+      short_name : kumanblog
     livefyre :
-      site_id : 123
+      site_id : 329787
     intensedebate :
       account : 123abc
     facebook :
