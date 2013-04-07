@@ -580,13 +580,12 @@ html {
   box-align: start;
 }
 .body .unit-inner {
-  width: 860px;
+  width: 760px;
   -webkit-box-ordinal-group: 2;  
   -moz-box-ordinal-group: 2;  
 }
 .body .unit-sidebar {
   width: 300px;
-  margin-left: 10px;
   -webkit-box-ordinal-group: 2;  
   -moz-box-ordinal-group: 2;  
 }
@@ -941,6 +940,7 @@ pre {
 .the-header .unit-head .nav-global .logo a {
   display: block;
   font-size: 24px;
+  line-height: 24px;
   padding-bottom: 0px;
 }
 .body .unit-body {
