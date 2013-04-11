@@ -438,15 +438,15 @@ h3,
 .h3 {
   font-size: 25.888px;
   line-height: 26px;
-  margin-top: 26px;
-  margin-bottom: 26px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 h4,
 .h4 {
   font-size: 18.541px;
   line-height: 26px;
-  margin-top: 26px;
-  margin-bottom: 26px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 p,
 ul,
@@ -454,7 +454,7 @@ ol,
 dl,
 img {
   margin-top: 0;
-  margin-bottom: 1.625em;
+  margin-bottom: 1em;
 }
 small,
 .small,
@@ -579,6 +579,9 @@ html {
   box-pack: center;
   box-align: start;
 }
+.body .unit-body-inner {
+  margin: 0 0 0 10px;
+}
 .body .unit-inner {
   width: 760px;
   -webkit-box-ordinal-group: 2;  
@@ -586,6 +589,7 @@ html {
 }
 .body .unit-sidebar {
   width: 300px;
+  margin: 20px 10px 0 20px;
   -webkit-box-ordinal-group: 2;  
   -moz-box-ordinal-group: 2;  
 }
@@ -600,8 +604,7 @@ a:visited {
   text-decoration: none;
 }
 a:hover {
-  color: #000;
-  text-decoration: underline;
+  color: #078303;
 }
 /* HIGHLIGHTER */
 pre {
@@ -640,10 +643,29 @@ pre {
   position: relative;
   top: 2px;
 }
+.the-header a:hover {
+  text-decoration: underline;
+}
+/* Social Bookmarks
+--------------------------------------------------------------------------------- */
+ul.social-links {
+  display: block;
+  margin-top: 18px;
+}
+ul.social-links li {
+  float: left;
+  list-style: none;
+}
+.fb-like {
+  margin-right:25px;
+  top: -2px;
+}
 /* MAIN
 --------------------------------------------------------------------------------- */
 .unit-article header {
   border-bottom: 5px solid rgba(21, 25, 25, 0.8);
+}
+article.layout-page header {
   margin-bottom: 21px;
 }
 .unit-article header h1 {
@@ -712,7 +734,7 @@ pre {
   padding-left: 0;
 }
 .unit-article ul {
-  list-style: square;
+  list-style: square inside;
 }
 .unit-article ol {
   list-style: decimal;
@@ -989,3 +1011,17 @@ pre {
 .the-header .unit-head .nav-global li {
   margin-right: 18px;
 }
+
+.clearfix:after{
+  content: "."; 
+  display: block; 
+  height: 0; 
+  font-size:0;  
+  clear: both; 
+  visibility:hidden;
+}
+.clearfix {display: inline-block;} 
+/* Hides from IE Mac */
+* html .clearfix {height: 1%;}
+* .clearfix {display:block;}
+*/* End Hack */ 

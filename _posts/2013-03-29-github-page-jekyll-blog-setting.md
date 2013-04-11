@@ -2,7 +2,7 @@
 layout: post
 title: "Jekyll and Github Pageでブログ作成"
 description: ""
-category: 
+category: Tech
 tags: [git,jekyll]
 ---
 
