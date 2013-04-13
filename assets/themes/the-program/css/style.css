@@ -557,6 +557,7 @@ html {
 }
 .body .unit-body {
   width: 100%;
+  width-min: 1040px;
   background-color: #fafafa;
 
   display: box;
@@ -1032,10 +1033,39 @@ article.layout-page header {
 */* End Hack */ 
 
 @media screen and (min-width: 0px) and (max-device-width: 1040px) {
-  .body .unit-body {
-    width: 1040px;
-  }
 }
 
+@media only screen and 
+(min-device-width : 768px) and 
+(max-device-width : 1024px) {
+  /* Styles */
+  body {
+    width: 1088px;
+  }
+  .body .unit-sidebar {
+  }
+  .body .unit-body-inner {
+    width: 738px;
+  }
+  .body .unit-body {
+    display: box;
+    box-orient: horizontal; 
+    box-pack: start;
+    box-align: start;
 
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+    -webkit-box-pack: start;
+    -webkit-box-align: start;
 
+    display: -moz-box;
+    -moz-box-orient: horizontal;
+    -moz-box-pack: start;
+    -moz-box-align: start;
+
+    display: box;
+    box-orient: horizontal;
+    box-pack: start;
+    box-align: start;
+  }
+}
