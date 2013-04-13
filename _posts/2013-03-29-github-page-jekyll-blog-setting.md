@@ -2,6 +2,7 @@
 layout: post
 title: "Jekyll and Github Pageでブログ作成"
 description: ""
+published: false
 category: Tech
 tags: [git,jekyll]
 ---
@@ -42,3 +43,6 @@ http://gosyujin.github.io/2012/10/10/jekyll-liquid-plugin/
 ## intensedebate
 
 ## Facebook
+
+// @todo
+https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter

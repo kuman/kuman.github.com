@@ -5,6 +5,8 @@ description: ""
 ---
 {% include JB/setup %}
 
+WordpressからJekyllに移行。少しずつサイトを整えていく予定。
+
 ### Profile 
 
 * 東京在住。
