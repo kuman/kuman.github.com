@@ -7,17 +7,17 @@ tags: [objective-c]
 ---
 {% include JB/setup %}
 
-最近まで訳ってLegacy Objective-Cで開発してて、今月からようやくModern Objective-Cに着手。なにやら記述法が簡単になったみたいだけどだいぶ変わっていて困惑したので自分用のメモ。
+最近まで訳あってLegacy Objective-Cで開発してて、今月からようやくModern Objective-Cに着手。なにやら記述が簡単になった様だけど、だいぶ変わっていて困惑したので自分用のメモ。(いまさらな内容だけれど・・)
 
 ### Objective-Cのメンバー変数と@property,@synthesize、要するに・・
 
-こういうことかな。かなり省略できる。全てがこの記述という訳ではないけど、基本的にはこれで問題無さそう。@propertyを宣言すればメンバー変数の宣言や@synthesizeもコンパイル時に自動的に生成してくれるみたい。今までの書き方だと宣言が多くてかったるかったのでこれは嬉しい。@propertyのオプションも省略可 (デフォルトはstrong)
+こういうことかな。かなり省略できる。全てがこの記述という訳ではないけど、基本的にはこれで問題無さそう。@propertyを宣言すればメンバー変数の宣言や@synthesizeもコンパイル時に自動的に生成してくれるみたい。今までの書き方だと宣言が多く手間だったのでこれは嬉しい。@propertyのオプションも省略可 (デフォルトはstrong)
 
 ![Modern Objective-cのプロパティ記述](http://img.kuman.asia/files/modern-objective-c-property.jpg)
 
 ### @property宣言の確認。
 
-@propertyだけでメンバー変数を宣言してくれてるか確認してみる。ついでにセッター、ゲッター周りも確認。それにしても代入方式が_message=, self.message=,[self setMessage]と3通りもあるのはややこしいけど、結果としてやっていることは同じ。使い分けとしては_deallocと_initはメンバー変数を直接参照で_message、それ以外はプロパティself.messageを使用というルールで良さそう。
+@propertyだけでメンバー変数を宣言してくれてるか確認してみる。ついでにセッター、ゲッター周りも確認。それにしても代入方式が&#95;message=, self.message=,[self setMessage]と3通りもあるのはややこしいけど、結果としてやっていることは同じ。使い分けとしては&#95;deallocと&#95;initはメンバー変数を直接参照で&#95;message、それ以外はプロパティself.messageを使用というルールで良さそう。
 
 ![Modern Objective-cのプロパティ記述の確認](http://img.kuman.asia/files/modern-objective-c-property-check.jpg)
 
@@ -30,6 +30,7 @@ tags: [objective-c]
 
 <pre>歴史的には、インターフェイスにはクラスのインスタンス変数宣言が必要でした。（中略）インスタンス変数は実装詳細であり、通常、クラス自身の外からアクセスされることはありません。さらに、実装ブロック内に宣言すること、あるいは宣言済みプロパティから自動生成させることも可能です。したがって通常は、インスタンス変数宣言をパブリックインターフェイスで行うべきではないので、波括弧も省略してください。
 </pre>
+公式ドキュメントです。いままでインターフェイスで宣言してました。公式で実装ブロック内での宣言やプロパティでの自動生成でも可能で、括弧も省略してよいみたい。
 
 * [Xcode4.4 Modern Objective-C Syntaxでコードをきれいにする方法](http://www.zero4racer.com/blog/798) by Zero4Racer (2012/7/25)
 
