@@ -19,34 +19,34 @@ WordpressからJekyllに移行。少しずつサイトを整えていく予定�
 
 * Ruby (一番付き合い長いかも)
 * (Ruby on Rails)
-* PHP
-* Objective-C
-* Python
-* MySQL
-* Postgres
-* HTML
-* CSS
-* Javascript
+* PHP (昔はよく使ってた)
+* Objective-C (最近これがメインに。。)
+* Python (これも最近か)
+* MySQL (長い付き合いです)
+* Postgres (懐かしい)
+* HTML (5が素敵)
+* CSS (ちょくちょく)
+* Javascript (たまにハマる。色んな意味で)
 
 **OS**
 
-* CentOS (最近はほぼ)
+* CentOS (これ多いな)
 * Ubunts (たまに)
-* Debian
-* Gentoo
+* Debian (たま〜に)
+* Gentoo (懐かしい)
 
 **Blog**
 
-* Jekyll 
+* Jekyll (最近始めてみた。よさげ)
 * Wordpress (Jekyllに浮気気味)
 
 **Tool/Service**
 
-* Vim
-* AppCode
-* Photoshop
-* Evernote
-* Powerpoint
-* Flipboard
+* Vim (もう手放せない)
+* AppCode (これ素敵)
+* Photoshop (合間みてさわってる。初心者レベル)
+* Evernote (おなじみ)
+* Flipboard (ニュース系が全てこれに置き換わった)
+* etc (思いついたら。。)
 
 
