@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: http://b.kuman.asia/sitemap.xml
+    

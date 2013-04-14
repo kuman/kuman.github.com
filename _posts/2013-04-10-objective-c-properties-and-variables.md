@@ -17,7 +17,7 @@ tags: [objective-c]
 
 ### @property宣言の確認。
 
-@propertyだけでメンバー変数を宣言してくれてるか確認してみる。ついでにセッター、ゲッター周りも確認。それにしても代入方式が_message=, self.message=,[self setMessage]と3通りもあるのはややこしい。使い分けとしては_deallocと_initはメンバー変数を直接参照で_message、それ以外はプロパティself.messageを使用というルールで良さそう。
+@propertyだけでメンバー変数を宣言してくれてるか確認してみる。ついでにセッター、ゲッター周りも確認。それにしても代入方式が_message=, self.message=,[self setMessage]と3通りもあるのはややこしいけど、結果としてやっていることは同じ。使い分けとしては_deallocと_initはメンバー変数を直接参照で_message、それ以外はプロパティself.messageを使用というルールで良さそう。
 
 ![Modern Objective-cのプロパティ記述の確認](http://img.kuman.asia/files/modern-objective-c-property-check.jpg)
 
