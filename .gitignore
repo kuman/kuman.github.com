@@ -12,6 +12,7 @@ Thumbs.db
 =======
 _site/
 
+.swp
 .*.swp
 .*.swo
 /server
