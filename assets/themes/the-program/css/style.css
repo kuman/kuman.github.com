@@ -594,6 +594,15 @@ html {
   -webkit-box-ordinal-group: 2;  
   -moz-box-ordinal-group: 2;  
 }
+.profile {
+}
+.profile ul {
+  padding: 0px;
+}
+.profile ul li {
+  list-style:none;
+  border-bottom:1px solid #CDCDCD;
+}
 
 /* LINK */
 a:link {
