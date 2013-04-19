@@ -8,21 +8,27 @@ tags: []
 ---
 {% include JB/setup %}
 
+{GIT_URL} = ""
+
 ### Add        Add file contents to the index
 
 // 新規ファイルを追加
 $ git add . 
 // ファイル名を指定して追加
 $ git add {ファイル名}
+// リモートに新しくブランチを追加
+$ git remote add {新しいブランチ名} {GIT_URL}
 
 ### Bisect     Find by binary search the change that introduced a bug
 ### Branch     List, create, or delete branches
 
 // ブランチ一覧を表示
 $ git branch 
+// リモートを含めたブランチ一覧確認
+$ git branch -a
 // ブランチの作成
 $ git branch {ブランチ名}
-// ブランチの確認
+// 現在のブランチの状況を確認
 $ git show-branch
 // ブランチの削除 (マージされていない場合、削除できない)
 $ git branch -d {ブランチ名}
@@ -51,6 +57,11 @@ git clone {Gitレポジトリ}
 ### Mv         Move or rename a file, a directory, or a symlink
 ### Pull       Fetch from and merge with another repository or a local branch
 ### Push       Update remote refs along with associated objects
+
+// 新しいブランチをリモートに追加 (その前にローカルにブランチを作成しておく)
+$ git push origin {新しいブランチ名}
+
+
 ### Rebase     Forward-port local commits to the updated upstream head
 ### Reset      Reset current HEAD to the specified state
 

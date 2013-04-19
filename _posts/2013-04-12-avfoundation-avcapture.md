@@ -396,3 +396,14 @@ error:(NSError *)error
 @end
 
 ```
+
+
+### 参考
+
+* [GifAnimationLayer](https://github.com/ideer2011/GifAnimationLayer)
+アニメーションGITでCALayerを作成してくれる。
+
+* [AVVideoCompositionCoreAnimationTool and CALayer in portrait mode?](http://stackoverflow.com/questions/6988310/avvideocompositioncoreanimationtool-and-calayer-in-portrait-mode)
+AVMutableCompositionとCABasicAnimatioの例が記述されている。
+
+
