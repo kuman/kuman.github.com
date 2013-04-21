@@ -13,13 +13,13 @@ tags:
 
 こういうことかな。かなり省略できる。全てがこの記述という訳ではないけど、基本的にはこれで問題無さそう。@propertyを宣言すればメンバー変数の宣言や@synthesizeもコンパイル時に自動的に生成してくれるみたい。今までの書き方だと宣言が多く手間だったのでこれは嬉しい。@propertyのオプションも省略可 (デフォルトはstrong)
 
-![Modern Objective-cのプロパティ記述](http://img.kuman.asia/files/modern-objective-c-property.jpg)
+<img alt="Modern Objective-cのプロパティ記述" src="http://img.kuman.asia/files/modern-objective-c-property.jpg" id="modern-objective-c-property">
 
 ### @property宣言の確認。
 
 @propertyだけでメンバー変数を宣言してくれてるか確認してみる。ついでにセッター、ゲッター周りも確認。それにしても代入方式が&#95;message=, self.message=,[self setMessage]と3通りもあるのはややこしいけど、結果としてやっていることは同じ。使い分けとしては&#95;deallocと&#95;initはメンバー変数を直接参照で&#95;message、それ以外はプロパティself.messageを使用というルールで良さそう。
 
-![Modern Objective-cのプロパティ記述の確認](http://img.kuman.asia/files/modern-objective-c-property-check.jpg)
+<img alt="Modern Objective-cのプロパティ記述の確認" src="http://img.kuman.asia/files/modern-objective-c-property-check.jpg" id="modern-objective-c-property-check">
 
 ### 参考サイト
 
