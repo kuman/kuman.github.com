@@ -2,8 +2,8 @@
 layout: post
 title: "Objective-Cのメンバー変数と@property,@synthesizeの記述法"
 description: ""
-category: Tech
-tags: [objective-c]
+category: objective-c
+tags: 
 ---
 {% include JB/setup %}
 
