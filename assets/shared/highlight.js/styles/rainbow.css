@@ -9,7 +9,7 @@ pre ::selection { background:#FF5E99; color:#fff; text-shadow: none; }
 
 pre code {
   display: block; padding: 0.5em;
-  background: #474949; color: #D1D9E1;
+  background: #393939; color: #D1D9E1;
 }
 
 

@@ -1,226 +1,43 @@
 ---
 layout: post
-title: "avfoundation avcapture"
-description: ""
-published: false
-category: 
-tags: []
+title: "AVFoundationで動画を加工合成処理"
+description: "AVFoundationの基本的な流れを整理。"
+published: true
+category: objective-c
+tags: [avfoundation]
 ---
 {% include JB/setup %}
 
-```java
+## やりたいこと。
+
+AVFoundationを初挑戦中。AVFoundationのドキュメントを読んでみるも難しい。やりたいことはAVCaptureMovieFileOutputで動画を録画して、その録画した動画にイラストやらコピーライトを追加したい。本当はエフェクトとか色々いれたいとろこだけど、まずは簡単そうなところから着手。今回、取り組む要件としては下記2点。
+
+* *動画ファイルにコピーライトを合成する。*
+* *動画ファイルに会社のロゴを合成する。*
 
 
-#import "ShootViewController.h"
+## AVFoundationクラスを整理
 
-@interface  ShootViewController()
+AVFoundationのクラスは多く関係性がいまいち掴めないので、まずはAVFoundationのクラスの整理。全クラスではなく動画の録画から加工までの流れで最低限必要になるであろうクラスを列挙。大きく録画に必要なクラス(青)と加工処理に必要なクラス(オレンジ)の２つに別れる。
 
-  @property float padding;
-  @property float width;
-  @property float height;
-  @property float btnWidth;
-  @property float btnHeight;
-  @property CGRect rectBtnPlay;
-  @property CGRect rectBtnStop;
-  @property CGRect rectPreview;
+<img alt="AVFoundationのクラス図" src="http://img.kuman.asia/files/avfoundation-class.jpg" id="avfoundation-class">
 
-  @property AVCaptureSession *session;
-  @property AVCaptureMovieFileOutput *movieFileOutput;
-  @property AVCaptureDeviceInput *deviceInput;
-  @property AVCaptureDevice *device;
-  @property AVCaptureVideoPreviewLayer *videoPreviewLayer;
+## 動画合成の流れ
 
-  @property UIButton *btnPlay;
-  @property UIButton *btnStop;
-  @property UIView *preview;
+今回実装したいのは録画の後の加工処理なので主に上記の"動画の加工/編集に必要なクラス群"(オレンジ)のクラスを使用する。あとは加工用のテキストやイラストに必要なCALayerクラスも必要。大雑把な流れとしてはこんな感じ。
 
-  @property AVAssetExportSession *assetExport;
+1. *ベースとなる動画のコンポジションを作成。*
+2. *合成したいテキストやイラストをCALayerで作成して、合成用コンポジションを生成。*
+3. *AVAssetExportSessionを使用して1と2のコンポジションを合成。*
 
-  - (void) calculateSize;
-  - (void)displayCapture;
-  - (AVCaptureDevice *)videoDeviceWithPosition:(AVCaptureDevicePosition)position;
-  - (void) touchBtnPlay:(UIButton *)button;
-  - (void) touchBtnStop:(UIButton *)button;
-  - (NSURL *)compositeMovieFromUrl:(NSURL *)outputFileURL;
+で、下記がその合成までに必要なクラスとメソッドを明記したフロー(細かいけど)。ベースと合成用のコンポジションを作成してAVAssetExportSessionで合成するという流れ。
 
-  @end
+<img alt="AVFoundationの動画の加工処理の流れ" src="http://img.kuman.asia/files/avfoundation-composition-flow.jpg" id="avfoundation-composition-flow">
 
-  @implementation ShootViewController
-
-  // 各種サイズを計算する。
-  -(void) calculateSize {
-    self.padding   = 10;
-    self.width     = self.view.frame.size.height;
-    self.height    = self.view.frame.size.width;
-    self.btnWidth  = self.width/6;
-    self.btnHeight = self.height/8;
-    self.rectBtnPlay = CGRectMake(self.width-self.btnWidth-self.padding,self.height-self.btnHeight-self.padding,self.btnWidth,self.btnHeight);
-    self.rectBtnStop = CGRectMake(self.width-self.btnWidth*2-self.padding*2,self.height-self.btnHeight-self.padding,self.btnWidth,self.btnHeight);
-    self.rectPreview = CGRectMake(0, 0, self.width*3/4, self.height*3/4);
-    LOG(@"width = %f, height = %f, btnWidth = %f, btnHeight = %f", self.width, self.height, self.btnWidth, self.btnHeight);
-  }
-
-- (void)viewDidLoad {
-  [super viewDidLoad];
-
-  //***** 画面設定 *****//
-
-  [self.navigationController.navigationBar setHidden:NO];
-  self.navigationController.navigationBar.translucent = YES;
-  [self.view setBackgroundColor:[UIColor brownColor]];
-  [self calculateSize];
-
-  //***** ビデオキャプチャ生成&設置 *****//
-
-  [self displayCapture];
-
-  //***** 各種ボタン・ラベルを作成 *****//
-
-  // タイトルを作成
-  UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 400, 44)];
-  titleLabel.backgroundColor = [UIColor clearColor];
-  titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
-  titleLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-  titleLabel.textColor =[UIColor whiteColor];
-  titleLabel.textAlignment = NSTextAlignmentCenter;
-  titleLabel.text = @"動画撮影";
-  self.navigationItem.titleView = titleLabel;
-
-  // ログインフォームを表示するボタン
-  self.btnPlay = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  [self.btnPlay setTitle:@"Play" forState:UIControlStateNormal];
-  [self.btnPlay setFrame:self.rectBtnPlay];
-  [self.view addSubview:self.btnPlay];
-
-  // 新規登録ビューへ移動するボタン
-  self.btnStop = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  [self.btnStop setTitle:@"Stop" forState:UIControlStateNormal];
-  [self.btnStop setFrame:self.rectBtnStop];
-  [self.view addSubview:self.btnStop];
-
-  //***** ボタンにアクションを設定 *****//
-
-  [self.btnPlay addTarget:self action:@selector(touchBtnPlay:) forControlEvents:UIControlEventTouchDown];
-  [self.btnStop addTarget:self action:@selector(touchBtnStop:) forControlEvents:UIControlEventTouchDown];
-
-}
-
-// 終了時に呼ばれる
-- (void)viewWillDisappear:(BOOL)animated {
-  [super viewWillDisappear:animated];
-
-  // ナビゲーションバーを隠す
-  [self.navigationController.navigationBar setHidden:YES];
-}
-
-// ビデオキャプチャを表示する
-- (void)displayCapture {
-
-  /*** 1. セッションの作成 ***/
-
-  self.session = [[AVCaptureSession alloc] init];
-
-  [self.session beginConfiguration];
-  /* 設定 */
-  [self.session commitConfiguration];
-
-  /*** 2. カメラデバイスの取得 ***/
-
-  // 端末背面のカメラデバイス取得
-  self.device = [self videoDeviceWithPosition:AVCaptureDevicePositionBack];
-
-  /*** 3. 入力デバイス作成 ***/
-
-  NSError *error = nil;
-  self.deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:&error];
-
-  // エラーがないか確認
-  if (!self.deviceInput) {
-    NSLog(@"CaptureDeviceInput error = %@", error);
-  }
-
-  // セッションに入力デバイスが追加できるか確認
-  if ([self.session canAddInput:self.deviceInput]) {
-    NSLog(@"Can add deviceInput");
-    // 入力デバイス追加
-    [self.session addInput:self.deviceInput];
-  }
-  else {
-    NSLog(@"Can't add deviceInput");
-  }
-
-  /*** 4. 出力デバイス作成 ***/
-
-  self.movieFileOutput = [[AVCaptureMovieFileOutput alloc] init];
-
-  // 出力デバイスの設定
-  CMTime maxDuration = CMTimeMake(3600, 600); // 6秒
-  self.movieFileOutput.maxRecordedDuration = maxDuration;
-  self.movieFileOutput.minFreeDiskSpaceLimit = 1024*1024; // in bytes
-
-  // セッションに出力デバイスが追加できるか確認
-  if ([self.session canAddOutput:self.movieFileOutput]) {
-    NSLog(@"Can add movieFileOutput");
-    [self.session addOutput:self.movieFileOutput];
-  } else {
-    NSLog(@"Can't add movieFileOutput");
-  }
-
-  /*** 5. プレビューレイヤー作成 ***/
-
-  self.preview = [[UIView alloc] initWithFrame:self.rectPreview];
-  [self.preview setBackgroundColor: [UIColor greenColor]];
-  [self.view addSubview:self.preview];
-
-  self.videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
-  [self.videoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
-  [self.videoPreviewLayer setFrame:self.preview.frame];
-  [[self.videoPreviewLayer connection]setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
-  [self.preview.layer addSublayer:self.videoPreviewLayer];
-
-  [self.session startRunning];
-}
-
-// ビデオデバイスを取得
-- (AVCaptureDevice *)videoDeviceWithPosition:(AVCaptureDevicePosition)position
-{
-  NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-  for (AVCaptureDevice *device in devices) {
-    if ([device position] == position)
-      LOG();
-    return device;
-  }
-  return nil;
-}
+コードは下記。AVCaptureMovieFileOutputで動画を録画し終わった後を想定しているので、CaptureOutputメソッドから記述。
 
 
-// ログインフォームを表示する
--(void) touchBtnPlay:(UIButton *)button {
-  LOG();
-  //----- START RECORDING -----
-
-  //Create temporary URL to record to
-  NSString *outputPath = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
-  NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  if ([fileManager fileExistsAtPath:outputPath])
-  {
-    NSError *error;
-    if ([fileManager removeItemAtPath:outputPath error:&error] == NO)
-    {
-      LOG(@"error = %@", error)
-        //Error - handle if requried
-    }
-  }
-  //Start recording
-  [self.movieFileOutput startRecordingToOutputFileURL:outputURL recordingDelegate:self];
-}
-
-// 新規登録ビューへ移動
--(void) touchBtnStop:(UIButton *)button {
-  LOG();
-  [self.session stopRunning];
-}
+```objectivec
 
 #pragma marks - AVCaptureFileOutputRecordingDelegate methods
 
@@ -230,180 +47,124 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
 fromConnections:(NSArray *)connections
 error:(NSError *)error
 {
-  LOG(@"didFinishRecordingToOutputFileAtURL - enter");
-
-  LOG(@"outputFileURL = %@", outputFileURL);
-  NSURL *compositeURL = [self compositeMovieFromUrl:outputFileURL];
-  LOG(@"compositeURL = %@", compositeURL);
-
-  BOOL RecordedSuccessfully = YES;
-  if ([error code] != noErr)
-  {
-    // A problem occurred: Find out if the recording was successful.
-    id value = [[error userInfo] objectForKey:AVErrorRecordingSuccessfullyFinishedKey];
-    if (value)
-    {
-      RecordedSuccessfully = [value boolValue];
-    }
-  }
-  if (RecordedSuccessfully)
-  {
-    //----- RECORDED SUCESSFULLY -----
-    NSLog(@"didFinishRecordingToOutputFileAtURL - success");
-    //        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    //        if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL])
-    //        {
-    //            [library writeVideoAtPathToSavedPhotosAlbum:outputFileURL
-    //                                        completionBlock:^(NSURL *assetURL, NSError *assetError)
-    //                                        {
-    //                                            if (assetError)
-    //                                            {
-    //
-    //                                            }
-    //                                        }];
-    //        }
-  }
+  // 合成処理実行。動画ファイルのURLを渡す。
+  [self compositeMovieFromUrl:outputFileURL];
 }
 
-// 動画を加工する
-- (NSURL *)compositeMovieFromUrl:(NSURL *)outputFileURL {
+// 動画の合成処理。コピーライトと会社のロゴを合成する。
+- (void)compositeMovieFromUrl:(NSURL *)outputFileURL {
 
-  // 動画の取得
+  //***** 1. ベースとなる動画のコンポジションを作成。*****//
+
+  // 動画URLからアセットを生成
   AVURLAsset *videoAsset = [[AVURLAsset alloc] initWithURL:outputFileURL options:nil];
-  LOG(@"asset = %@, trackCount = %d", videoAsset, [videoAsset.tracks count]);
 
-  //***** 動画を合成するためのコンポジションクラスを生成 *****//
+  // コンポジション作成
   AVMutableComposition* mixComposition = [AVMutableComposition composition];
-  // コンポジショントラックを生成
-  AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+  AVMutableCompositionTrack *compositionVideoTrack = 
+      [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+      preferredTrackID:kCMPersistentTrackID_Invalid];
 
-  // AVURLAssetからトラックを取得
+  // アセットからトラックを取得
   AVAssetTrack *videoTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-
-  // If you need audio as well add the Asset Track for audio here
-  // もし音声が必要ならば、ここにAudioトラックを追加する。
 
   // コンポジションの設定
   [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:videoTrack atTime:kCMTimeZero error:nil];
   [compositionVideoTrack setPreferredTransform:[[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] preferredTransform]];
 
-  // アイコンとレイヤーの生成
-  UIImage *iconImage = [UIImage imageNamed:@"icon.png"];
-  CALayer *iconLayer = [CALayer layer];
-  iconLayer.contents = (id) iconImage.CGImage;
-  iconLayer.frame = CGRectMake(5, 25, 57, 57); //Needed for proper display. We are using the app icon (57x57). If you use 0,0 you will not see it
-  iconLayer.opacity = 0.9; //Feel free to alter the alpha here
+  //***** 2. 合成したいテキストやイラストをCALayerで作成して、合成用コンポジションを生成。*****//
 
-  // If you want a text instead of image here is the code
-  // 画像の代わりにテキストを表示したい場合はここにコードを記述
+  // ロゴのCALayer作成
+  UIImage *logoImage = [UIImage imageNamed:@"logo.png"];
+  CALayer *logoLayer = [CALayer layer];
+  logoLayer.contents = (id) logoImage.CGImage;
+  logoLayer.frame = CGRectMake(5, 25, 57, 57); 
+  logoLayer.opacity = 0.9; 
 
-  // トラックの取得
-  //    AVAssetTrack *track = [videoAsset.tracks objectAtIndex:0];
+  // 動画のサイズを取得
   CGSize videoSize = videoTrack.naturalSize;
 
-  // テキストレイヤー生成
-  CATextLayer *titleLayer = [CATextLayer layer];
-  titleLayer.string = @"Text goes here";
-  [titleLayer setFont:@"Helvetica"];
-  titleLayer.fontSize = videoSize.height / 6;
-  titleLayer.shadowOpacity = 0.5;
-  titleLayer.alignmentMode = kCAAlignmentCenter;
-  titleLayer.bounds = CGRectMake(0, 0, videoSize.width, videoSize.height / 6); //You may need to adjust this for proper display
+  // コピーライトのCALayerを作成
+  CATextLayer *copyrightLayer = [CATextLayer layer];
+  copyrightLayer.string = @"kuman.com";
+  [copyrightLayer setFont:@"Helvetica"];
+  copyrightLayer.fontSize = videoSize.height / 6;
+  copyrightLayer.shadowOpacity = 0.5;
+  copyrightLayer.alignmentMode = kCAAlignmentCenter;
+  copyrightLayer.bounds = CGRectMake(0, 0, videoSize.width, videoSize.height / 6);
 
-  // The following code sorts the layer in proper order:
-  // 下記のコードを適切な順に並べる。
-
-  // 親レイヤーとビデオレイヤーを作成
+  // 親レイヤーを作成
   CALayer *parentLayer = [CALayer layer];
   CALayer *videoLayer = [CALayer layer];
   parentLayer.frame = CGRectMake(0, 0, videoSize.width, videoSize.height);
   videoLayer.frame  = CGRectMake(0, 0, videoSize.width, videoSize.height);
   [parentLayer addSublayer:videoLayer];
-  [parentLayer addSublayer:iconLayer]; // アイコンを追加
-  [parentLayer addSublayer:titleLayer]; // テキストを追加
+  [parentLayer addSublayer:logoLayer];
+  [parentLayer addSublayer:copyrightLayer];
 
-  // Now we are creating the composition and add the instructions to insert the layer:
-  // レイヤーにコンポジションとレイヤーを追加する。
-
-  // ビデオ合成用オブジェクト作成
+  // 合成用コンポジション作成
   AVMutableVideoComposition* videoComp = [AVMutableVideoComposition videoComposition];
   videoComp.renderSize = videoSize;
   videoComp.frameDuration = CMTimeMake(1, 30);
-  // ビデオレイヤーを追加
-  videoComp.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+  videoComp.animationTool =
+    [AVVideoCompositionCoreAnimationTool 
+    videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer 
+    inLayer:parentLayer];
 
-  // instruction
-
-  AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+  // インストラクション作成
+  AVMutableVideoCompositionInstruction *instruction = 
+    [AVMutableVideoCompositionInstruction videoCompositionInstruction];
   instruction.timeRange = CMTimeRangeMake(kCMTimeZero, [mixComposition duration]); // 時間を設定
-  //    AVAssetTrack *videoTrack = [[mixComposition tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-  // トラックからレイヤーインストラクションを作成。Array型
-  AVMutableVideoCompositionLayerInstruction* layerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+  AVMutableVideoCompositionLayerInstruction* layerInstruction =
+    [AVMutableVideoCompositionLayerInstruction 
+    videoCompositionLayerInstructionWithAssetTrack:videoTrack];
   instruction.layerInstructions = [NSArray arrayWithObject:layerInstruction];
 
-  // インストラクションを追加
+  // インストラクションを合成用コンポジションに設定
   videoComp.instructions = [NSArray arrayWithObject: instruction];
 
-  // And now we are ready to export:
-  // 合成した動画を出力する
+  //***** 3. AVAssetExportSessionを使用して1と2のコンポジションを合成。*****//
 
-  // AVMutableCompositionであるmixCompositionを元にAVAssetExportSessionを作成
-  _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetMediumQuality]; //AVAssetExportPresetPassthrough
+  // 1のコンポジションをベースにAVAssetExportを生成
+  _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition 
+    presetName:AVAssetExportPresetMediumQuality];
+  // 2の合成用コンポジションを設定
   _assetExport.videoComposition = videoComp;
 
-  // 動画ファイル名とエクスポート先のPATHとURLを作成
-  NSString* videoName = @"mynewwatermarkedvideo.mov";
+  // エクスポートファイルの設定
+  NSString* videoName = @"kuman.mov";
   NSString *exportPath = [NSTemporaryDirectory() stringByAppendingPathComponent:videoName];
   NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
+  _assetExport.outputFileType = AVFileTypeQuickTimeMovie;
+  _assetExport.outputURL = exportUrl;
+  _assetExport.shouldOptimizeForNetworkUse = YES;
 
+  // ファイルが存在している場合は削除
   if ([[NSFileManager defaultManager] fileExistsAtPath:exportPath])
   {
     [[NSFileManager defaultManager] removeItemAtPath:exportPath error:nil];
   }
 
-  // エクスポート設定
-  _assetExport.outputFileType = AVFileTypeQuickTimeMovie;
-  _assetExport.outputURL = exportUrl;
-  _assetExport.shouldOptimizeForNetworkUse = YES;
-
-  //    [strRecordedFilename setString: exportPath];
-  LOG(@"exportPath = %@", exportPath);
-  LOG(@"exportURL  = %@", exportUrl);
-
+  // エクスポード実行
   [_assetExport exportAsynchronouslyWithCompletionHandler:
     ^(void ) {
-      //YOUR FINALIZATION CODE HERE
-      LOG(":::::::::");
+      // 端末に保存
       ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
       if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:exportUrl])
       {
         [library writeVideoAtPathToSavedPhotosAlbum:exportUrl
           completionBlock:^(NSURL *assetURL, NSError *assetError)
           {
-            if (assetError)
-            {
-
-            }
+            if (assetError) { }
           }];
       }
     }
   ];
-
-
-  return exportUrl;
 }
-
-@end
 
 ```
 
+## 参考サイト
 
-### 参考
-
-* [GifAnimationLayer](https://github.com/ideer2011/GifAnimationLayer)
-アニメーションGITでCALayerを作成してくれる。
-
-* [AVVideoCompositionCoreAnimationTool and CALayer in portrait mode?](http://stackoverflow.com/questions/6988310/avvideocompositioncoreanimationtool-and-calayer-in-portrait-mode)
-AVMutableCompositionとCABasicAnimatioの例が記述されている。
-
+* [iOS Developer AVFoundation](https://developer.apple.com/jp/devcenter/ios/library/documentation/AVFoundationPG.pdf)
 
