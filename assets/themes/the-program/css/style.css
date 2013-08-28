@@ -584,13 +584,14 @@ html {
   margin: 0 0 0 10px;
 }
 .body .unit-inner {
+  margin:16px 0px 16px 0px;
   width: 720px;
   -webkit-box-ordinal-group: 2;  
   -moz-box-ordinal-group: 2;  
 }
 .body .unit-sidebar {
   width: 300px;
-  margin: 0px 10px 0 20px;
+  margin: 16px 10px 16px 20px;
   -webkit-box-ordinal-group: 2;  
   -moz-box-ordinal-group: 2;  
 }
@@ -1008,6 +1009,7 @@ article.layout-page header {
 }
 .body .unit-body {
   border-top: 1px solid rgba(255, 255, 255, 0.6);
+  margin-top: 10px;
 }
 .the-footer {
   background-color: #1a1a1a;
