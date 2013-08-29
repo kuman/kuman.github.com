@@ -875,6 +875,10 @@ article.layout-page header {
 .unit-article .comment a {
   border-bottom: 0;
 }
+.the-footer .unit-foot {
+  width: 1050px;
+  margin: 0 auto;
+}
 .unit-article .unit-foot {
   border-top: 5px solid rgba(21, 25, 25, 0.8);
   padding-top: 1.625em;
@@ -995,7 +999,9 @@ article.layout-page header {
   margin-bottom: 0;
 }
 .the-header .unit-head {
-  padding: 5px 26px;
+  width: 1050px;
+  margin: 0 auto;
+  padding: 5px 0px;
 }
 .the-header .unit-head .nav-global .logo {
   display: block;
@@ -1009,7 +1015,6 @@ article.layout-page header {
 }
 .body .unit-body {
   border-top: 1px solid rgba(255, 255, 255, 0.6);
-  margin-top: 10px;
 }
 .the-footer {
   background-color: #1a1a1a;
