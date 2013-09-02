@@ -42,20 +42,6 @@
 				</div>
 			</div><!-- unit-inner -->
       <div class="unit-sidebar">
-      <!--
-        <div class="profile box">
-          <h4>Kumanの自己紹介</h4>
-          <ul>
-            <li>自然とITをこよなく愛するエンジニア。</li>
-            <li><span>特徴</span> : 価値あるサービス作りに日々奮闘中</li>
-            <li><span>趣味</span> : 旅行、トレッキング</li>
-            <li><span>言語</span> : Ruby, Objective-c, etc</li>
-            <li><span>映画</span> : ラストサムライ</li>
-            <li><span>一言</span> : 1年くらい山奥に篭りたい</li>
-            <li><span>座右の名</span> : <br />「おもしろきこともなき世をおもしろく」</li>
-          </ul>
-        </div>
-        -->
         <script type="text/javascript"><!--
           google_ad_client = "ca-pub-0674525975520699";
           /* KumanAsiaSidebarTop */
@@ -77,6 +63,45 @@
         {% endfor %}
         </dl>
         </div>
+        <!-- Categories list start -->
+        <div class="box">
+          <h4>Categories</h4>
+          {% assign categories_list = site.categories %}  
+          <ul class="tag_box inline clearfix">
+          {% if categories_list.first[0] == null %}
+            {% for category in categories_list %} 
+                <li><a href="{{ BASE_PATH }}{{ site.JB.categories_path }}#{{ category }}-ref">
+                    {{ category | join: "/" }} <span>{{ site.categories[category].size }}</span>
+                </a></li>
+            {% endfor %}
+          {% else %}
+            {% for category in categories_list %} 
+                <li><a href="{{ BASE_PATH }}{{ site.JB.categories_path }}#{{ category[0] }}-ref">
+                    {{ category[0] | join: "/" }} <span>{{ category[1].size }}</span>
+                </a></li>
+            {% endfor %}
+            {% endif %} 
+            </ul>
+        </div>
+        <!-- Categories list end -->
+        <!-- Tag list start -->
+        <div class="box">
+          <h4>Tags</h4>
+          {% assign tags_list = site.tags %}  
+          <ul class="tag_box inline clearfix">
+          {% if tags_list.first[0] == null %}
+            {% for tag in tags_list %} 
+                <li><a href="{{ BASE_PATH }}{{ site.JB.tags_path }}#{{ tag }}-ref">{{ tag }} <span>{{ site.tags[tag].size }}</span></a></li>
+            {% endfor %}
+          {% else %}
+            {% for tag in tags_list %} 
+                <li><a href="{{ BASE_PATH }}{{ site.JB.tags_path }}#{{ tag[0] }}-ref">{{ tag[0] }} <span>{{ tag[1].size }}</span></a></li>
+            {% endfor %}
+          {% endif %}
+          </ul>
+        </div>
+        <!-- Tag list end -->
+
       </div>
 		</div><!-- unit-body -->
 	</div><!-- body -->
