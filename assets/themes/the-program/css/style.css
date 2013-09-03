@@ -548,7 +548,7 @@ html {
   color: #2d2d2d;
 }
 #page {
-  background: url('/assets/themes/the-program/skin/100-90-5-monochrome.png');
+  background: url('/assets/themes/the-program/skin/bgHeader.jpg');
   background-repeat: repeat;
   background-position: 0 0;
   background-color: #e2e2de;
@@ -657,6 +657,10 @@ pre {
 /* meta */
 /* HEADER
 --------------------------------------------------------------------------------- */
+.the-header {
+  background-color: #CCFFFF;
+  background-color: rgba(230, 230, 230, 0.8);
+}
 .the-header .logo {
   font-family: UbuntuMono-B, consolas, monaco, monospace;
   margin: 0;
@@ -1097,6 +1101,14 @@ dl.posts dd {
   margin-right: 18px;
 }
 
+.unit-head .ninja_onebutton_output {
+    border-bottom: 5px solid #073642;
+    padding: 0px 0px -5px 0px;
+}
+.unit-head .ninja_onebutton_output > div  {
+    padding: 0px 0px 0px 5px;
+}
+
 .clearfix:after{
   content: "."; 
   display: block; 
@@ -1151,4 +1163,5 @@ dl.posts dd {
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
+
 
