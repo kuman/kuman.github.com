@@ -9,7 +9,7 @@ tags: [cocos2d-x]
 {% include JB/setup %}
 
 クロスプラットフォーム開発を目指し、2DゲームエンジンであるCocos2d-xを試してみた。初めての言語ということもあり、基本的な実装で時間を取られる。なんでよく使う基本的な記述を列挙してみる。 前提条件としてはCocos2d-xをインストールして、新規プロジェクトを作成できたという段階です。またCocos2d-xのバージョンは3.0系での構文になります。
-(レシピは随時更新予定)
+(随時更新予定)
 
 #### Index
 
@@ -28,6 +28,7 @@ tags: [cocos2d-x]
 * Recipe13. [背景画像を設定したい](#recipe13)
 * Recipe14. [BGMを鳴らしたい](#recipe14)
 * Recipe15. [効果音を鳴したい](#recipe15)
+* Recipe16. [画像をアニメーションさせたい](#recipe16)
 
 ## <span id="recipe1">Recipe1.</span> ディレクターを取得したい
 
@@ -141,5 +142,48 @@ CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm.mp3", 
 ```cpp
 CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound01.mp3");
 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound01.mp3");
+```
+
+## <span id="recipe16">Recipe16.</span> 画像をアニメーションさせたい
+```cpp
+// アニメーション時間
+float duration = 1.0f;
+
+// Spriteで画像を表示
+Sprite *sprite = Sprite::create("cat.png");
+sprite->setPosition(this->getPosition());
+this->addChild(sprite, 1); // 第2引数は表示順
+
+// 基本例.1 画像を拡大(縮小)させる
+float scale = 1.5f;
+ActionInterval* actionScale  = ScaleTo::create(duration, scale);
+sprite->runAction(actionScale);
+
+// 基本例.2 画像を回転させる
+float rotate = 360;
+ActionInterval* actionRotate = RotateBy::create(duration, rotate);
+sprite->runAction(actionRotate);
+
+// 基本例.3 ペジェ曲線に沿って移動させる
+float x        = this->getPosition().x;
+float y        = this->getPosition().y;
+float height   = 300;
+float width    = 300;
+ccBezierConfig bezier;
+bezier.controlPoint_1 = Point(x, y);
+bezier.controlPoint_2 = Point(x + width/2, y + height * 2);
+bezier.endPosition    = Point(x + width, y + height);
+ActionInterval* actionBezier = BezierTo::create(duration, bezier);
+sprite->runAction(actionBezier);
+
+// 応用例.1 フェイドアウト後、関数を呼び出す
+ActionInterval* actionFade   = FadeOut::create(duration);
+CallFuncN* callFunction = CallFuncN::create(this, callfuncN_selector(CrashBeanSprite::callbackActionFinished));
+Sequence* callAction = Sequence::create(actionFade, callFunction, NULL);
+sprite->runAction(callAction);
+
+// (下記関数は適切な場所に記述)
+void TestScene::callbackActionFinished(Sprite *sprite) {
+}
 ```
 
