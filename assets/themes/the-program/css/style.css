@@ -321,6 +321,26 @@ table {
 td {
   vertical-align: top;
 }
+
+table.list {
+    border-top:1px solid #333;
+    border-left:1px solid #333;
+}
+table.list tr.title {
+    background:#666;
+    color:#fff;
+}
+table.list td.rank {
+    text-align:center;
+}
+table.list tr.title td {
+    vertical-align:middle;
+    text-align:center;
+}
+table.list th, table.list td {
+    border-right:1px solid #333;
+    border-bottom:1px solid #333;
+}
 /*
 Base .mod module from http://j.mp/svs81k
 
